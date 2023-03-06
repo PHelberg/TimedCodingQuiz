@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Quiz with Timer</title>
+  </head>
+  <body>
+    
+    <div id="quiz-container">
+      <h1>Timed Coding Quiz</h1>
+      <div id="question-container"></div>
+      <button id="submit-button">Submit</button>
+      <div id="timer-container"></div>
+    </div>
+    <form id="initials-form">
+        <label for="initials">Enter your initials:</label>
+        <input type="text" id="initials" name="initials">
+      </form>
+      <form id="score">
+        <label for="score">Enter your score:</label>
+        <input type="text" id="score" name="score">
+      </form>
+      <div id="score"></div>
+    </div>
+
+    <script>
+        const quizData = [
+          {
+            question: "What do you use to check if a string is equal to or not equal to another string?",
+            answers: [
+              { text: "Elements", correct: false },
+              { text: "Comparisons", correct: true },
+             
+            ],
+          },
+          {
+            question: "What symbol do you use to check if a string is equal to another string?",
+            answers: [
+              { text: "Strict Quality Operator", correct: true},
+              { text: "The minus sign", correct: false },
+          ],
+        },
+      ];
+
+
+      const quizDuration = 60;
+
+      let timerInterval;
+      let remainingTime = quizDuration;
+      let score = 0;
+
+   
+      function startQuiz() {
+        showQuestion();
+        startTimer();
+      }
+
+      function showQuestion() {
+        const questionContainer = document.getElementById("question-container");
+        const currentQuestion = quizData.shift();
+        const questionText = currentQuestion.question;
+        questionContainer.textContent = questionText;
+
+        const answerButtons = currentQuestion.answers.map((answer) => {
+          const button = document.createElement("button");
+          button.textContent = answer.text;
+          button.addEventListener("click", () => {
+            if (answer.correct) {
+              score++;
+            }
+            if (quizData.length > 0) {
+              showQuestion();
+            } else {
+              endQuiz();
+            }
+          });
+          return button;
+        });
+
+        questionContainer.append(...answerButtons);
+      }
+
+      function startTimer() {
+        const timerContainer = document.getElementById("timer-container");
+        const timerElement = document.createElement("div");
+        timerContainer.appendChild(timerElement);
+
+        timerInterval = setInterval(() => {
+          remainingTime--;
+          timerElement.textContent = `Time remaining: ${remainingTime} seconds`;
+          if (remainingTime === 0) {
+            endQuiz();
+          }
+        }, 1000);
+      }
+
+      function endQuiz() {
+        clearInterval(timerInterval);
+        const quizContainer = document.getElementById("quiz-container");
+        quizContainer.innerHTML = `
+          <h1>Quiz complete!</h1>
+          <p>Your score is ${score} out of ${quizData.length}.</p>
+        `;
+      }
+      
+      window.addEventListener("load", startQuiz);
+    </script>
+  </body>
+</html>
+
+
+
